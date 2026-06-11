@@ -1,5 +1,5 @@
 # rs_port
-```
+
 ```
 rust-learning-portfolio/
 │
@@ -67,9 +67,3 @@ rust-learning-portfolio/
 │
 └── README.md
 ```
-```
-
-
-
-# rs_port
-# rs_port
