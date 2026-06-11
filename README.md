@@ -67,6 +67,3 @@ rust-learning-portfolio/
 │
 └── README.md
 ```
-
-
-_your thy teach_
