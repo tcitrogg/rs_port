@@ -9,12 +9,23 @@ exit!    - quit.
 static RESET: &str = "\x1b[0m";
 
 fn scan_expr(expr: &String) -> (char, Vec<String>) {
-    for each_char in expr.chars() {
-        match each_char {
-            op @ ('+' | '-' | '/' | '*') => return (op, vec![]),
-            _ => continue,
-        }
+    let mut operator = ' ';
+    if expr.contains("+") {
+        operator = '+';
+    } else if expr.contains("-") {
+        operator = '-';
+    } else if expr.contains("*") {
+        operator = '*';
+    } else if expr.contains("/") {
+        operator = '/';
     }
+
+    let vec_operands = expr
+        .split(operator)
+        .map(|s| s.to_string())
+        .collect::<Vec<String>>();
+
+    (operator, vec_operands)
 }
 
 fn parse_cal(expr: &String) {
