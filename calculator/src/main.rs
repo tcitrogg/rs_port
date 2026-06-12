@@ -1,60 +1,68 @@
-use std::io::{self, Write};
+use std::{
+    io::{self, Write},
+    num::ParseFloatError,
+};
 
 static HELP_DIALOG: &str = r#"
-help!    - show this dialog.
-history! - show history.
-exit!    - quit.
+help!    | m!  - show this dialog.
+history! | h!  - show history.
+exit!    | q!  - quit.
 "#;
 
 static RESET: &str = "\x1b[0m";
 
-fn scan_expr(expr: &String) -> (char, Vec<String>) {
-    let mut operator = ' ';
-    if expr.contains("+") {
-        operator = '+';
-    } else if expr.contains("-") {
-        operator = '-';
-    } else if expr.contains("*") {
-        operator = '*';
+fn check_for_operator(expr: &String) -> Option<char> {
+    if expr.contains("*") {
+        return Some('*');
     } else if expr.contains("/") {
-        operator = '/';
+        return Some('/');
+    } else if expr.contains("+") {
+        return Some('+');
+    } else if expr.contains("-") {
+        return Some('-');
     }
-
-    let vec_operands = expr
-        .split(operator)
-        .map(|s| s.to_string())
-        .collect::<Vec<String>>();
-
-    (operator, vec_operands)
+    None
 }
 
-fn parse_cal(expr: &String) {
-    let trimed_expr = expr.trim().split(" ").collect::<Vec<&str>>();
-    if let Ok(left_operand) = trimed_expr[0].parse::<f64>() {
-        if let Ok(right_operand) = trimed_expr[2].parse::<f64>() {
-            match trimed_expr[1] {
-                "+" => println!("\x1b[32m>{RESET} {}", left_operand + right_operand),
-                "-" => println!("\x1b[32m>{RESET} {}", left_operand - right_operand),
-                "*" => println!("\x1b[32m>{RESET} {}", left_operand * right_operand),
-                "/" => {
-                    if right_operand == 0.0 {
-                        println!("\x1b[31m(ERR): Division by zero is not allowed.{}", RESET);
-                    } else {
-                        println!("\x1b[32m>{RESET} {}", left_operand / right_operand)
+fn cal_tree(expr: &String) -> Result<f64, String> {
+    let trimed_expr = expr.trim();
+    if let Some(operator) = check_for_operator(&trimed_expr.to_string()) {
+        let Some((left_operand, right_operand)) = trimed_expr.split_once(operator) else {
+            return Err(format!("\x1b[31m(Er): Invalid Operand!{RESET}"));
+        };
+        if let Ok(evaluated_left_operand) = cal_tree(&left_operand.trim().to_string())
+            && let Ok(evaluated_right_operand) = cal_tree(&right_operand.trim().to_string())
+        {
+            match operator {
+                '+' => return Ok(evaluated_left_operand + evaluated_right_operand),
+                '-' => return Ok(evaluated_left_operand - evaluated_right_operand),
+                '*' => return Ok(evaluated_left_operand * evaluated_right_operand),
+                '/' => {
+                    if evaluated_right_operand == 0.0 {
+                        return Err(format!(
+                            "\x1b[31m(Er): Division by zero is not allowed.{}",
+                            RESET
+                        ));
                     }
+                    return Ok(evaluated_left_operand / evaluated_right_operand);
                 }
                 // "^" => println!("Result: {}", left_operand.pow(right_operand)),
-                _ => println!("\x1b[31m(ERR): Invalid Operator!{RESET}"),
+                _ => return Err(format!("\x1b[31m(Er): Invalid Operator!{RESET}")),
             }
-        };
+        }
+        // return Err(format!("\x1b[31m(Err): RHS: nvalid Expression!{RESET}"));
+    }
+
+    if let Ok(value) = expr.parse::<f64>() {
+        return Ok(value);
     } else {
-        println!("\x1b[31m(ERR): Invalid Operand!{RESET}")
+        return Err(format!("\x1b[31m(Er): Invalid Expression!{RESET}"));
     }
 }
 
 fn main() {
     let mut history: Vec<String> = Vec::new();
-    println!("Welcome to Rust Calculator!\n\x1b[34m[Type help! for help dialog]{RESET}");
+    println!("\x1b[33mWelcome to Rust Calculator!\n\x1b[34m[Type help! for help dialog]{RESET}");
     println!("Enter expression (e.g - 8 + 15)");
     let mut running = true;
     while running {
@@ -65,13 +73,17 @@ fn main() {
 
         io::stdin().read_line(&mut expr).unwrap();
         match expr.trim() {
-            "help!" => println!("{}", HELP_DIALOG),
-            "history!" => println!("{:#?}", history),
-            "exit!" => {
+            "help!" | "m!" => println!("\x1b[34m{HELP_DIALOG}{RESET}"),
+            "history!" | "h!" => println!("\x1b[35m{:#?}{RESET}", history),
+            "exit!" | "q!" => {
                 running = false;
             }
             _ => {
-                parse_cal(&expr);
+                match cal_tree(&expr) {
+                    Ok(v) => println!("\x1b[32m(Ok) {v}{RESET} "),
+                    Err(e) => println!("{e}"),
+                }
+                //calculator(&expr);
                 history.push(expr.trim().to_string())
             }
         }
