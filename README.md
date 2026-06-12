@@ -1,10 +1,7 @@
 # rs_port
-
 ```
-rust-learning-portfolio/
-│
 ├── 📁 beginner-projects/
-│   ├── [calculator/](/calculator/)
+│   ├── calculator/
 │   ├── todo-cli/
 │   ├── guessing-game/
 │   ├── word-freq-analyzer/
