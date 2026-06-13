@@ -27,37 +27,48 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // action
                 "add" => {
                     if let Some(value) = program_args.next() {
-                        todo::add_todo(&mut todos, value);
+                        todo::add_todo(&mut todos, value.clone());
                         save(&todos)?;
+                        println!("\x1b[32m(Added: {}){RESET} {value}", todos.len())
                     } else {
-                        println!("\x1b[33m(Er) No title specified!{RESET}\nTry help to see usage");
+                        println!("\x1b[31m(Er) No title specified!{RESET}\nTry help to see usage");
                     }
                 }
                 "clear" => {
                     todo::clear(&mut todos);
                     save(&todos)?;
+                    println!("\x1b[33m(Cleared) Todo List{RESET}")
                 }
                 "mark" => {
-                    if let Some(value) = program_args.next() {
-                        if let Ok(id) = value.parse::<usize>() {
-                            todo::mark_todo(&mut todos, id);
-                            save(&todos)?;
+                    let value = program_args.next();
+                    if let Some(val) = &value
+                        && let Ok(id) = val.parse::<usize>()
+                        && let Ok(mark) = todo::mark_todo(&mut todos, id)
+                    {
+                        save(&todos)?;
+                        if mark {
+                            println!("\x1b[32m(Marked) x ID:{id} {RESET} as completed")
                         } else {
-                            println!("\x1b[33m(Er) Invalid ID!{RESET}\n");
+                            println!("\x1b[33m(Unmarked) - ID:{id} {RESET} as uncompleted")
                         }
+                    } else {
+                        println!("\x1b[31m(Er) Invalid ID:{}!{RESET}", value.unwrap());
                     }
                 }
                 "delete" => {
-                    if let Some(value) = program_args.next() {
-                        if let Ok(id) = value.parse::<usize>() {
-                            todo::delete_todo(&mut todos, id);
-                            save(&todos)?;
-                        } else {
-                            println!("\x1b[33m(Er) Invalid ID!{RESET}\n");
-                        }
+                    let value = program_args.next();
+                    if let Some(val) = &value
+                        && let Ok(id) = val.parse::<usize>()
+                        && let Ok(_) = todo::delete_todo(&mut todos, id)
+                    {
+                        save(&todos)?;
+                        println!("\x1b[33m(Deleted) ID:{id}{RESET}");
+                        return Ok(());
+                    } else {
+                        println!("\x1b[31m(Er) Invalid ID:{}!{RESET}", value.unwrap());
                     }
                 }
-                "list" => println!("\x1b[35m{:#?}{RESET}", todos),
+                "list" => todo::list(&todos),
                 _ => println!("\x1b[34m{HELP_DIALOG}{RESET}"),
             }
         }
