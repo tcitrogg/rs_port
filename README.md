@@ -60,3 +60,23 @@
 ├── <a href="./guessing-game">guessing-game/</a><br>
 ├── <a href="./word-freq-analyzer">word-freq-analyzer/</a><br>
 └── <a href="./md-converter">md-converter/</a><br>
+
+# rs_por
+├── 📁 beginner-projects/<br>
+│   ├── [calculator/](./calculator)<br>
+│   ├── [todo-cli/](./todo-cli)<br>
+│   ├── [guessing-game/](./guessing-game)<br>
+│   ├── [word-freq-analyzer/](./word-freq-analyzer)<br>
+│   └── [md-converter/](./md-converter)<br>
+
+
+# rs_por
+
+```markdown
+├── 📁 beginner-projects/<br>
+│   ├── [calculator/](./calculator)<br>
+│   ├── [todo-cli/](./todo-cli)<br>
+│   ├── [guessing-game/](./guessing-game)<br>
+│   ├── [word-freq-analyzer/](./word-freq-analyzer)<br>
+│   └── [md-converter/](./md-converter)<br>
+```
