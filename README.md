@@ -12,27 +12,27 @@ Rust is not an easy language to learn — but it teaches you to think more caref
 
 
 ## Directory Structure
-📁 **beginner-projects/**<br>
+📁 **beginner-projects/** *1*<br>
 ├── [calculator/](./calculator)<br>
 ├── [todo-cli/](./todo-cli)<br>
 ├── [guessing-game/](./guessing-game)<br>
 ├── [word-freq-analyzer/](./word-freq-analyzer)<br>
 └── [md-converter/](./md-converter)<br>
 │<br>
-📁 **intermediate-projects/**<br>
+📁 **intermediate-projects/** *2*<br>
 ├── [file-search/]()<br>
 ├── [weather-dashboard/]()<br>
 ├── [finance-tracker/]()<br>
 ├── [http-server/]()<br>
 └── [blog-api/]()<br>
 │<br>
-📁 **advanced-projects/**<br>
+📁 **advanced-projects/** *3*<br>
 ├── [chat-server/]()<br>
 ├── [crypto-tracker/]()<br>
 ├── [kv-store/]()<br>
 └── [static-site-gen/]()<br>
 │<br>
-📁 **expert-projects/**<br>
+📁 **expert-projects/** *4*<br>
 ├── [slab-allocator/]()<br>
 ├── [wasm-image-proc/]()<br>
 ├── [tiny-vm/]()<br>
