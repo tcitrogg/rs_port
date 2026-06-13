@@ -1,14 +1,13 @@
 # 🦀 Rust Port
 > A structured journey from absolute beginner to advanced Rust developer,
 > documented through real-world projects and systems programming.
----
+
 
 ## Caption
 Learning Rust with no prior systems programming experience.
 This repository documents everything I've built, learned, and struggled with on the path to becoming a proficient Rust developer.
 
-Rust is not an easy language to learn — but it teaches you to think more carefully about memory, ownership, and system design. Every project here represents a real problem solved, not a tutorial exercise.
----
+_Rust is not an easy language to learn — but it teaches you to think more carefully about memory, ownership, and system design. Every project here represents a real problem solved, not a tutorial exercise._
 
 
 ## Directory Structure
