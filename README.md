@@ -1,9 +1,11 @@
 # rs_port
-```
+
+[NOTION](https://app.notion.com/p/Rust-323a6b1d727a80e0ace3cb92136d2788?source=tcitrogg)
+```markdown
 ├── 📁 beginner-projects/
-│   ├── calculator/
-│   ├── todo-cli/
-│   ├── guessing-game/
+│   ├── [calculator/](/calculator)
+│   ├── [todo-cli/](/todo-cli)
+│   ├── [guessing-game/](/guessing-game)
 │   ├── word-freq-analyzer/
 │   └── md-converter/
 │
