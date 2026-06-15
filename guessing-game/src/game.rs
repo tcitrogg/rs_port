@@ -71,6 +71,7 @@ impl Stats {
             "\x1b[34mWin Rate    │{}{RESET}",
             (self.game_won / self.game_played) as f64 * 100_f64
         );
+
         if let Some(best_score) = self.best_score {
             println!("\x1b[32mBest Score  │{}{RESET}", best_score);
             println!(
