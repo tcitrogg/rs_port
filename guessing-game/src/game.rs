@@ -38,12 +38,18 @@ impl Stats {
                         if value == correct_number {
                             self.game_won += 1;
                             println!("\x1b[32m:) You won in {no_of_guesses} guesses!{RESET}");
-                            if let Some(best_score) = self.best_score
-                                && best_score > no_of_guesses
-                            {
-                                self.best_score = Some(no_of_guesses);
-                                self.total_guesses += no_of_guesses;
-                                println!("\x1b[35m+ New Best Score!{RESET}");
+                            self.total_guesses += no_of_guesses;
+                            match self.best_score {
+                                Some(best_score) => {
+                                    if best_score > no_of_guesses {
+                                        self.best_score = Some(no_of_guesses);
+                                        println!("\x1b[35m+ New Best Score!{RESET}");
+                                    }
+                                }
+                                None => {
+                                    self.best_score = Some(no_of_guesses);
+                                    println!("\x1b[35m+ New Best Score!{RESET}");
+                                }
                             }
                             return;
                         } else if value > correct_number {
@@ -64,23 +70,23 @@ impl Stats {
     }
 
     pub fn print_stats(&self) {
-        println!("\x1b[34m─── Session Statistics ───{RESET}");
+        println!("\n\x1b[34m─── Session Statistics ───{RESET}");
         println!("\x1b[34mGame Played │{}{RESET}", self.game_played);
         println!("\x1b[32mGame Won    │{}{RESET}", self.game_won);
         println!(
-            "\x1b[34mWin Rate    │{}{RESET}",
-            (self.game_won / self.game_played) as f64 * 100_f64
+            "\x1b[34mWin Rate    │{}%{RESET}",
+            (self.game_won as f64 / self.game_played as f64) * 100_f64
         );
 
         if let Some(best_score) = self.best_score {
             println!("\x1b[32mBest Score  │{}{RESET}", best_score);
             println!(
                 "\x1b[34mAvg Guessed │{}{RESET}",
-                self.total_guesses / best_score
+                self.total_guesses / self.game_played
             );
         } else {
             println!("\x1b[32mBest Score  │{}{RESET}", 0);
-            println!("\x1b[34mAvg Guessed │{}{RESET}", 0.0);
+            println!("\x1b[34mAvg Guesses │{}{RESET}", 0.0);
         }
     }
 }

@@ -21,12 +21,11 @@ fn main() {
     println!(
         "Guess a number between 1 and 100. You have \x1b[33m<{MAX_GUESSES}>{RESET} attempts.\n"
     );
+    let correct_number: u32 = rand::random_range(1..=100);
+    stats.play_game(MAX_GUESSES, correct_number);
 
     while running {
-        let correct_number: u32 = rand::random_range(1..=100);
-        stats.play_game(MAX_GUESSES, correct_number);
-
-        print!("\x1b[34mPlay again? ([y]es/[n]o): {RESET}");
+        print!("\x1b[34m\nPlay again? ([y]es/[n]o): {RESET}");
         let mut play_again_input = String::new();
 
         io::stdout().flush().unwrap();
@@ -39,6 +38,7 @@ fn main() {
                 println!(
                     "Guess a number between 1 and 100. You have \x1b[33m<{MAX_GUESSES}>{RESET} attempts.\n"
                 );
+                let correct_number: u32 = rand::random_range(1..=100);
                 stats.play_game(MAX_GUESSES, correct_number);
                 continue;
             }
