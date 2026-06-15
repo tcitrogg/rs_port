@@ -1,0 +1,9 @@
+/home/emeth/cave/rs_port/guessing-game/target/debug/deps/cpufeatures-74701194ceec5438.d: /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/lib.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/x86.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/../README.md
+
+/home/emeth/cave/rs_port/guessing-game/target/debug/deps/libcpufeatures-74701194ceec5438.rlib: /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/lib.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/x86.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/../README.md
+
+/home/emeth/cave/rs_port/guessing-game/target/debug/deps/libcpufeatures-74701194ceec5438.rmeta: /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/lib.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/x86.rs /home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/../README.md
+
+/home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/lib.rs:
+/home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/x86.rs:
+/home/emeth/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/cpufeatures-0.3.0/src/../README.md:
