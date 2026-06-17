@@ -1,37 +1,57 @@
 use std::collections::HashMap;
 
-use crate::RESET;
+// use crate::RESET;
 
-pub fn analyse(vec_content: Vec<String>) -> HashMap<String, u32> {
+pub fn analyse(vec_content: Vec<String>) -> (usize, HashMap<String, u32>) {
     let mut store: HashMap<String, u32> = HashMap::new();
-    for each_string in vec_content {
+    for each_string in vec_content.clone() {
         *store.entry(each_string).or_insert(0) += 1_u32;
     }
-    store
+    (vec_content.len(), store)
 }
 
-pub fn stats(store: HashMap<String, u32>, files: Vec<String>) -> String {
-    let mut result = String::from("Word Frequency Analysis");
-    
-    if files.len() > 1 {
-        result += "\nFile(s): ";
-        result += files.iter().fold(String::new(), |acc, s| acc+" "+s).as_str();
-    } else {
-        result += format!("File(s): {}", files[0]).as_str();
+pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> String {
+    let mut result = String::new();
+    result += format!("\n### Top {top_words_count} Words\n").as_str();
+    let mut sorted = store.into_iter().collect::<Vec<(&String, &u32)>>();
+    sorted.sort_by(|a, b| b.1.cmp(&a.1));
+    let top_words = &sorted[0..top_words_count];
+    for (id, each_value) in top_words.iter().enumerate() {
+        result += format!(
+            "{}. {}     -> {} times ()\n",
+            id + 1,
+            each_value.0,
+            each_value.1
+        )
+        .as_str();
     }
-
-    // top 5 words
-    let sorted = store.into_iter().collect::<Vec<(String, u32)>>();
-    sorted.sort_by(|a, b|b.1.cmp(&a.1));
-    for each_word in top_five{
-        println!("{}", each_word)
-    }
-
     result
 }
 
-pub fn save_report(store: HashMap<String, u32>, file_name: String) -> String{
+pub fn stats(analysis_info: (usize, HashMap<String, u32>), files: &[String]) -> String {
+    let top_words_count: usize = 5;
+    let (total_words, store) = analysis_info;
+    let mut result = String::from("## Word Frequency Analysis\n");
 
-    std::fs::write(path, contents)
-    file_name
+    if files.len() > 1 {
+        result += "\n### Files:\n";
+        result += files
+            .iter()
+            .fold(String::new(), |acc, s| acc + " " + s + "\n")
+            .as_str();
+    } else {
+        result += format!("\n### File: {}\n", files[0]).as_str();
+    }
+
+    // top 5 words
+    result += get_top_words(top_words_count, &store).as_str();
+
+    // other stats
+    let avg_word_len = &store.iter().map(|w| w.0.len()).sum::<usize>() / store.len();
+    result += "\n### Statistics\n";
+    result += format!("- Total Words    : {}\n", total_words).as_str();
+    result += format!("- Unique Words   : {}\n", store.len()).as_str();
+    result += format!("- Avg Word Len   : {}\n", avg_word_len).as_str();
+
+    result
 }

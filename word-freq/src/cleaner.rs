@@ -1,4 +1,4 @@
-pub fn clean(file_content: &String) -> (Vec<String>, usize) {
+pub fn clean(file_content: &String) -> Vec<String> {
     let mut result = vec![];
     for each_part in file_content.split_whitespace() {
         if each_part.len() != 0 {
@@ -11,6 +11,5 @@ pub fn clean(file_content: &String) -> (Vec<String>, usize) {
             );
         }
     }
-    let total_words = result.len();
-    (result, total_words)
+    result
 }

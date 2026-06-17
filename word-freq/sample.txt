@@ -1,0 +1,124 @@
+### 
+
+### Objective
+
+Build a tool that reads one or more text files and produces a detailed frequency analysis: the most common words, unique word count, total word count, and average word length. Output results to both the terminal and a report file.
+
+### Concepts Covered
+
+- `HashMap<K, V>` — Rust's key-value collection
+- Iterators and functional programming: `.map()`, `.filter()`, `.collect()`, `.fold()`
+- String manipulation: splitting, trimming, case normalization
+- Sorting and ownership in collections
+- Multiple file I/O
+- Error propagation with `?` operator and `Result<T, E>`
+- Writing to output files
+- `BTreeMap` vs `HashMap` — ordered vs unordered
+
+### Prerequisites
+
+- Projects 1.1–1.3
+- Familiarity with `Vec` and basic file I/O
+
+### Task Description
+
+Build a CLI tool:
+
+```
+word-freq analyze report.txt
+word-freq analyze chapter1.txt chapter2.txt
+word-freq top 20 report.txt       ← show top 20 words
+```
+
+The tool should:
+
+1. Accept one or more filenames as arguments
+2. Ignore punctuation and treat words case-insensitively
+3. Count how many times each word appears
+4. Display the top N most frequent words
+5. Show total words, unique words, and average word length
+6. Save a full report to `word-freq-report.txt`
+
+### Implementation Guide
+
+**Step 1 — File reading with error propagation**
+Write a function `read_file(path: &str) -> Result<String, std::io::Error>`. Use `std::fs::read_to_string()`. Return the `Result` directly. In `main()`, call this with the `?` operator to propagate errors. This is your first real error handling pattern.
+
+**Step 2 — Text cleaning**
+Write a function that takes a `String` and returns a `Vec<String>` of cleaned words. Think about:
+
+- Splitting by whitespace
+- Converting each word to lowercase with `.to_lowercase()`
+- Removing punctuation: use `.chars().filter(|c| c.is_alphabetic()).collect::<String>()`
+- Filtering out empty strings
+
+**Step 3 — Frequency counting with HashMap**
+Create a `HashMap<String, u32>`. Loop over your cleaned words. For each word, use the `entry()` API:
+
+```
+map.entry(word).or_insert(0) += 1;
+```
+
+Understand why this pattern is elegant — it handles both "key exists" and "key doesn't exist" in one line.
+
+**Step 4 — Sorting results**
+Convert the `HashMap` into a `Vec<(String, u32)>` using `.into_iter().collect()`. Sort this `Vec` by the count (second element) in descending order using `.sort_by(|a, b| b.1.cmp(&a.1))`. Understand why you can't sort a `HashMap` directly.
+
+**Step 5 — Statistics calculation**
+Use iterators to compute:
+
+- Total words: `.len()` on your word `Vec`
+- Unique words: `.len()` on the `HashMap`
+- Average word length: sum all word lengths with `.map(|w| w.len()).sum::<usize>()`, divide by count
+
+**File structure:**
+
+```
+word-freq/
+├── Cargo.toml
+└── src/
+    ├── main.rs         ← CLI argument handling
+    ├── analyzer.rs     ← frequency counting and statistics
+    ├── cleaner.rs      ← text cleaning functions
+    └── reporter.rs     ← output formatting and file writing
+```
+
+### Expected Results
+
+```
+📊 Word Frequency Analysis
+File: sample.txt (2,847 words)
+
+Top 10 Words:
+  1. the      → 187 times (6.6%)
+  2. and      → 143 times (5.0%)
+  3. rust     → 98 times (3.4%)
+  ...
+
+Statistics:
+  Total Words   : 2,847
+  Unique Words  : 634
+  Avg Word Len  : 5.2 characters
+
+Report saved to: word-freq-report.txt
+```
+
+### Extensions / Challenges
+
+- Exclude common stop words (the, and, a, is, etc.) from results
+- Add a `-compare` flag that shows how word frequencies differ between two files
+- Build a word co-occurrence matrix (which words appear near each other)
+- Visualize the top words as an ASCII bar chart in the terminal
+
+### Real World Application
+
+`HashMap` is used in virtually every application for caching, indexing, and counting. Text analysis tools power SEO software, writing assistants, plagiarism detectors, and search engines. Iterators in Rust are as powerful as LINQ in C# or streams in Java.
+
+### Resources
+
+- The Rust Book — Chapter 8.3: HashMaps
+- The Rust Book — Chapter 13: Iterators and Closures
+- Rust by Example — HashMap
+- Error Handling in Rust
+
+---

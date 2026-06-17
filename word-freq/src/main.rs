@@ -12,7 +12,8 @@ top <count> <file>  - e.g | top 20 report.txt | show the top 20 words in the rep
 "#;
 
 pub fn read_file(path: &str) -> Result<String, Box<dyn Error>> {
-    let content = std::fs::read_to_string(path)?;
+    let content = std::fs::read_to_string(path)
+        .expect(format!("\x1b[31m(Err): Reading File: {path}").as_str());
     Ok(content)
 }
 
@@ -25,10 +26,20 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("\x1b[34m{HELP_DIALOG}{RESET}");
                 return Ok(());
             }
+            let list_of_files = &program_args[2..];
             let mut files_content = String::new();
-            for each_file in &program_args[2..] {
+            for each_file in list_of_files {
                 files_content += &read_file(each_file)?;
             }
+
+            // clean content
+            let cleaned_content = cleaner::clean(&files_content);
+            // analyse content
+            let analysis_info = analyser::analyse(cleaned_content);
+            let complete_stats = analyser::stats(analysis_info, list_of_files);
+            // save in file
+            let saved_report_name = reporter::save_report(complete_stats);
+            println!("\x1b[32m(Saved) Report -> {saved_report_name}");
         }
         "top" => {
             // head
@@ -36,8 +47,14 @@ fn main() -> Result<(), Box<dyn Error>> {
                 println!("\x1b[34m{HELP_DIALOG}{RESET}");
                 return Ok(());
             }
-            if let Ok(count) = &program_args[2].parse::<u32>() {
+            if let Ok(count) = &program_args[2].parse::<usize>() {
                 let file_content = read_file(&program_args[3])?;
+                // clean content
+                let cleaned_content = cleaner::clean(&file_content);
+                // analyse content
+                let analysis_info = analyser::analyse(cleaned_content);
+                let top_words_result = analyser::get_top_words(*count, &analysis_info.1);
+                println!("\x1b[34m{top_words_result}{RESET}")
             } else {
                 println!(
                     "\x1b[31m(Err) Invalid integer value for <count>.{RESET}Try `help` to see usage."

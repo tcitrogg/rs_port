@@ -1,0 +1,17 @@
+## Word Frequency Analysis
+
+### Files:
+ test_files/sample.txt
+ test_files/sample2.txt
+
+### Top 5 Words
+1.      -> 207 times ()
+2. a     -> 44 times ()
+3. and     -> 30 times ()
+4. the     -> 26 times ()
+5. words     -> 17 times ()
+
+### Statistics
+- Total Words    : 1258
+- Unique Words   : 486
+- Avg Word Len   : 6

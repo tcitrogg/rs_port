@@ -1,0 +1,130 @@
+### 
+
+### Objective
+
+Build a CLI tool that converts a Markdown `.md` file into a well-structured HTML page. This is a real-world parsing problem that exercises string manipulation and pattern matching at a deeper level.
+
+### Concepts Covered
+
+- Regular expressions with the `regex` crate
+- String slices (`&str`) vs owned `String` — and when to use each
+- Traits — specifically `Display` and `From`/`Into`
+- Iterators over lines of text
+- Enums as state machines
+- Writing multi-file Rust projects
+- Integration testing with `cargo test`
+
+### Prerequisites
+
+- All Phase 1 projects so far
+- Understanding of `HashMap`, iterators, and file I/O
+
+### Task Description
+
+Build a tool:
+
+```
+md-convert input.md output.html
+md-convert input.md               ← defaults to input.html
+```
+
+Support at minimum:
+
+- `# Heading 1` through `###### Heading 6`
+- `*bold**` and `italic*` and `~~strikethrough~~`
+- Unordered lists `item`
+- Ordered lists `1. item`
+- Inline code ``code``
+- Fenced code blocks `````
+- `link text` → `<a href="url">link text</a>`
+- `!alt` → `<img src="url" alt="alt">`
+- Blank lines between paragraphs → `<p>` tags
+- Horizontal rules `--`
+
+### Implementation Guide
+
+**Step 1 — Design the parsing model**
+The key insight: process the file line by line. Each line belongs to one of several "contexts": a heading, a list, a code block, a paragraph, etc. Design an enum `LineType` that represents all possible line types.
+
+Think about "state" — when you're inside a fenced code block, rules change. Lines are no longer parsed for markdown; they're emitted as-is. A `bool` flag `in_code_block` tracks this.
+
+**Step 2 — Line classification**
+Write a function `classify_line(line: &str) -> LineType`. Use string methods like `.starts_with()`, `.trim()`, and optionally the `regex` crate for inline patterns. Return the correct `LineType` variant.
+
+**Step 3 — Inline transformations**
+Some transformations apply within a line (bold, italic, links, inline code). Write a function `process_inline(line: &str) -> String` that applies regex replacements in sequence. The order matters — process code spans before bold/italic so that asterisks inside backticks are not processed.
+
+**Step 4 — Block-level assembly**
+Maintain a mutable `output: Vec<String>` of HTML lines. A list context needs special handling: you must emit an opening `<ul>` or `<ol>` tag when a list starts, and a closing tag when it ends. Track `in_list` state.
+
+**Step 5 — Generate full HTML document**
+Wrap the output in a full HTML boilerplate: `<html>`, `<head>`, `<body>`, with a basic embedded CSS stylesheet for readability.
+
+**Step 6 — Write tests**
+In a `tests/` folder or in `#[cfg(test)]` modules, write tests that verify:
+
+- A heading line converts correctly
+- A bold word converts correctly
+- A fenced code block is not processed for inline markdown
+
+**File structure:**
+
+```
+md-convert/
+├── Cargo.toml
+└── src/
+    ├── main.rs         ← CLI entry, file I/O
+    ├── parser.rs       ← line classification, block-level parsing
+    ├── inline.rs       ← inline transformations (bold, links, etc.)
+    └── renderer.rs     ← HTML assembly and boilerplate
+tests/
+    └── conversion_tests.rs
+```
+
+### Expected Results
+
+Input `README.md`:
+
+```markdown
+# Hello World
+This is **bold** and *italic* text.
+- Item one
+- Item two
+```
+
+Output `README.html`:
+
+```html
+<html>
+<head><style>body { font-family: sans-serif; max-width: 800px; margin: auto; }</style></head>
+<body>
+<h1>Hello World</h1>
+<p>This is <strong>bold</strong> and <em>italic</em> text.</p>
+<ul>
+  <li>Item one</li>
+  <li>Item two</li>
+</ul>
+</body>
+</html>
+```
+
+### Extensions / Challenges
+
+- Add support for tables
+- Add a `-watch` mode that re-converts whenever the source file changes
+- Generate a table of contents from headings
+- Add syntax highlighting classes to code blocks
+
+### Real World Application
+
+Static site generators (Hugo, Jekyll, Zola), documentation systems (mdBook, GitBook), note-taking apps (Obsidian), and README renderers (GitHub) all implement Markdown parsing. This project gives you a first-hand understanding of how they work.
+
+### Resources
+
+- The Rust Book — Chapter 10: Traits
+- regex crate documentation
+- Rust Book — Writing Tests
+- CommonMark Markdown Spec
+- pulldown-cmark source (reference)
+
+---
