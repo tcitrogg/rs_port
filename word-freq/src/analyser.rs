@@ -5,7 +5,7 @@ use std::collections::HashMap;
 pub fn analyse(vec_content: Vec<String>) -> (usize, HashMap<String, u32>) {
     let mut store: HashMap<String, u32> = HashMap::new();
     for each_string in vec_content.clone() {
-        *store.entry(each_string).or_insert(0) += 1_u32;
+        *store.entry(each_string.to_lowercase()).or_insert(0) += 1_u32;
     }
     (vec_content.len(), store)
 }
@@ -22,12 +22,16 @@ pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> St
     }
     let selected_top_words = &sorted[0..new_top_words_count];
 
-    let unique_store_len = store.len();
-    result +=
-        format!("\n### Top {new_top_words_count} Words out of [{unique_store_len}]:\n").as_str();
+    //let unique_store_len = store.len();
+    let max_word_len = selected_top_words
+        .iter()
+        .map(|(w, _)| w.len())
+        .max()
+        .unwrap_or(1);
+    result += format!("\n### Top {new_top_words_count} Words:\n").as_str();
     for (id, each_value) in selected_top_words.iter().enumerate() {
         result += format!(
-            "{:>3}. {:<7} -> {:>4} times ({:.2}%)\n",
+            "{:>3}. {:<max_word_len$} -> {:>4} times |{:>5.1}%\n",
             id + 1,
             each_value.0,
             each_value.1,
@@ -41,7 +45,9 @@ pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> St
 pub fn stats(analysis_info: (usize, HashMap<String, u32>), files: &[String]) -> String {
     let top_words_count: usize = 5;
     let (_, store) = analysis_info;
-    let mut result = String::from("## Word Frequency Analysis\n");
+    let mut result = String::from(
+        "## Word Frequency Analysis\n> Common stop words e.g (the, and, a, is, etc.) are excluded\n",
+    );
 
     if files.len() > 1 {
         result += "\n### Files:\n";
@@ -52,7 +58,6 @@ pub fn stats(analysis_info: (usize, HashMap<String, u32>), files: &[String]) -> 
     } else {
         result += format!("\n### File: {}\n", files[0]).as_str();
     }
-
     // top 5 words
     result += get_top_words(top_words_count, &store).as_str();
 

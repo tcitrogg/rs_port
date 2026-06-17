@@ -54,7 +54,12 @@ fn main() -> Result<(), Box<dyn Error>> {
                 // analyse content
                 let analysis_info = analyser::analyse(cleaned_content);
                 let top_words_result = analyser::get_top_words(*count, &analysis_info.1);
-                println!("\x1b[34m{top_words_result}{RESET}")
+
+                println!("\n## Word Frequency Analysis");
+                print!(
+                    "\x1b[33m> Common stop words e.g (the, and, a, is, etc.) are excluded{RESET}"
+                );
+                println!("\x1b[35m{top_words_result}{RESET}");
             } else {
                 println!(
                     "\x1b[31m(Err) Invalid integer value for <count>.{RESET}Try `help` to see usage."
