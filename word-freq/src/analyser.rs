@@ -31,7 +31,7 @@ pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> St
     result += format!("\n### Top {new_top_words_count} Words:\n").as_str();
     for (id, each_value) in selected_top_words.iter().enumerate() {
         result += format!(
-            "{:>3}. {:<max_word_len$} -> {:>4} times |{:>5.1}%\n",
+            "{:>3}. {:<max_word_len$} -> {:>4} times | {:>4.1}%\n",
             id + 1,
             each_value.0,
             each_value.1,
