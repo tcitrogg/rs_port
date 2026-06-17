@@ -1,6 +1,6 @@
 pub fn save_report(content: String) -> String {
     // , files: &[String]
-    let mut _file_name = String::from("wf-report.txt");
+    let mut _file_name = String::from("wf-report.md");
     // generate the filename
     // if files.len() > 1 {
     // files.iter().fold(String::new(), |acc, s| acc+"_")

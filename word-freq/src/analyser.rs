@@ -12,16 +12,26 @@ pub fn analyse(vec_content: Vec<String>) -> (usize, HashMap<String, u32>) {
 
 pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> String {
     let mut result = String::new();
-    result += format!("\n### Top {top_words_count} Words\n").as_str();
+
     let mut sorted = store.into_iter().collect::<Vec<(&String, &u32)>>();
     sorted.sort_by(|a, b| b.1.cmp(&a.1));
-    let top_words = &sorted[0..top_words_count];
-    for (id, each_value) in top_words.iter().enumerate() {
+
+    let mut new_top_words_count = top_words_count;
+    if new_top_words_count > sorted.len() {
+        new_top_words_count = sorted.len()
+    }
+    let selected_top_words = &sorted[0..new_top_words_count];
+
+    let unique_store_len = store.len();
+    result +=
+        format!("\n### Top {new_top_words_count} Words out of [{unique_store_len}]:\n").as_str();
+    for (id, each_value) in selected_top_words.iter().enumerate() {
         result += format!(
-            "{}. {}     -> {} times ()\n",
+            "{:>3}. {:<7} -> {:>4} times ({:.2}%)\n",
             id + 1,
             each_value.0,
-            each_value.1
+            each_value.1,
+            (*each_value.1 as f64 / store.len() as f64) * 100.0
         )
         .as_str();
     }
@@ -30,14 +40,14 @@ pub fn get_top_words(top_words_count: usize, store: &HashMap<String, u32>) -> St
 
 pub fn stats(analysis_info: (usize, HashMap<String, u32>), files: &[String]) -> String {
     let top_words_count: usize = 5;
-    let (total_words, store) = analysis_info;
+    let (_, store) = analysis_info;
     let mut result = String::from("## Word Frequency Analysis\n");
 
     if files.len() > 1 {
         result += "\n### Files:\n";
         result += files
             .iter()
-            .fold(String::new(), |acc, s| acc + " " + s + "\n")
+            .fold(String::new(), |acc, s| acc + "  - " + s + "\n")
             .as_str();
     } else {
         result += format!("\n### File: {}\n", files[0]).as_str();
@@ -48,7 +58,8 @@ pub fn stats(analysis_info: (usize, HashMap<String, u32>), files: &[String]) -> 
 
     // other stats
     let avg_word_len = &store.iter().map(|w| w.0.len()).sum::<usize>() / store.len();
-    result += "\n### Statistics\n";
+    result += "\n### Statistics:\n";
+    let total_words = store.values().sum::<u32>();
     result += format!("- Total Words    : {}\n", total_words).as_str();
     result += format!("- Unique Words   : {}\n", store.len()).as_str();
     result += format!("- Avg Word Len   : {}\n", avg_word_len).as_str();
